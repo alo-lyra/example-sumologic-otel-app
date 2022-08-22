@@ -1,0 +1,19 @@
+# Basic configuration for metrics: https://github.com/SumoLogic/sumologic-otel-collector/blob/main/docs/Configuration.md#basic-configuration-for-metrics
+exporters:
+  sumologic:
+
+extensions:
+  sumologic:
+    install_token: ${SUMOLOGIC_INSTALL_TOKEN}
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+service:
+  extensions: [sumologic]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [sumologic]

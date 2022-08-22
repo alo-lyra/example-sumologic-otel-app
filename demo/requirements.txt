@@ -1,0 +1,6 @@
+Flask==2.2.2
+
+opentelemetry-distro[otlp]
+opentelemetry-instrumentation
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-logging

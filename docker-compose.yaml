@@ -1,0 +1,35 @@
+version: "2"
+services:
+  demo-server:
+    build:
+      context: demo
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_DEBUG=1
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT}
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}
+      - OTEL_TRACES_EXPORTER=otlp_proto_grpc
+      - OTEL_METRICS_EXPORTER=otlp_proto_grpc
+    volumes:
+      - ./demo:/usr/src/app/demo
+    ports:
+      - 5020:5020
+    depends_on:
+      - otel-collector
+
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/docker-compose.yaml
+  otel-collector:
+    image: public.ecr.aws/sumologic/sumologic-otel-collector:${RELEASE_VERSION}
+      #image: sumologic/opentelemetry-collector:${RELEASE_VERSION}
+    command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
+    environment:
+      - SUMOLOGIC_INSTALL_TOKEN=${SUMOLOGIC_INSTALL_TOKEN}
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888"
+      - "8888:8888"
+      - "8889:8889"
+      - "13133:13133"
+      - "4317:4317"
+      - "55679:55679"
